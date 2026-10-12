@@ -7,7 +7,7 @@
   const heightInput = document.getElementById('avatarHeight');
   const weightInput = document.getElementById('avatarWeight');
   const read = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } };
-  const profile = () => read('clothes.profile', {gender:'neutro',height:165,weight:60,hair:'short',skin:'#dba77f'});
+  const profile = () => read('clothes.profile', {gender:'neutro',height:165,weight:60});
   const queue = () => read('clothes.tryOnQueue', []);
   const wornIds = () => { const value=read('clothes.worn',[]); return Array.isArray(value)?value:value?[value]:[]; };
   const esc = value => String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -64,11 +64,11 @@
     emitAvatar();
   }
   form.addEventListener('submit',event=>{
-    event.preventDefault();const next={gender:document.getElementById('avatarGender').value,height:Number(document.getElementById('avatarHeight').value),weight:Number(document.getElementById('avatarWeight').value),hair:document.getElementById('avatarHair').value,skin:document.getElementById('avatarSkin').value};
+    event.preventDefault();const next={gender:document.getElementById('avatarGender').value,height:Number(document.getElementById('avatarHeight').value),weight:Number(document.getElementById('avatarWeight').value)};
     if(next.height<120||next.height>220||next.weight<30||next.weight>250)return;localStorage.setItem('clothes.profile',JSON.stringify(next));emitAvatar();
   });
   document.getElementById('avatarReset').addEventListener('click',()=>{
-    localStorage.removeItem('clothes.profile');const defaults={gender:'neutro',height:165,weight:60,hair:'short',skin:'#dba77f'};
+    localStorage.removeItem('clothes.profile');const defaults={gender:'neutro',height:165,weight:60};
     Object.entries(defaults).forEach(([key,value])=>{const input=form.elements[key];if(input)input.value=value;});syncMeasurements();emitAvatar();
   });
   const saved=profile();Object.entries(saved).forEach(([key,value])=>{const input=form.elements[key];if(input)input.value=value;});

@@ -4,7 +4,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 const host = document.getElementById('avatarCanvas');
 if (!host) throw new Error('No se encontró el área del avatar.');
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xe6e7df);
+scene.background = new THREE.Color(0xf9f9f8);
 const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
 camera.position.set(0, 1.8, 6.2);
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
@@ -142,27 +142,28 @@ function clearModel() {
     });
   }
 }
-function addHair(head, hairMat, style) {
-  if (style === 'long') {
-    // Keep the length behind the cheeks; the strands stay behind the eye/face plane.
-    sphere(head, hairMat, [0, -0.06, -0.20], [0.36, 0.56, 0.22]);
-    segment(head, hairMat, [-0.34, 0.12, 0.04], [-0.38, -0.58, -0.04], 0.075, 0.055);
-    segment(head, hairMat, [0.34, 0.12, 0.04], [0.38, -0.58, -0.04], 0.075, 0.055);
-    sphere(head, hairMat, [0, 0.25, -0.08], [0.37, 0.27, 0.27]);
-    sphere(head, hairMat, [0, 0.34, 0.04], [0.29, 0.10, 0.16]);
-  } else if (style === 'curly') {
-    // Curly volume sits on the crown and sides. No curls cross the forehead or eyes.
-    sphere(head, hairMat, [0, 0.25, -0.08], [0.40, 0.31, 0.31]);
-    for (let i = 0; i < 18; i++) {
-      const angle = (i / 18) * Math.PI * 2;
-      const front = Math.sin(angle);
-      if (front > 0.42) continue;
-      sphere(head, hairMat, [Math.cos(angle) * 0.35, 0.18 + (i % 3) * 0.055, -0.04 + front * 0.25], [0.10, 0.11, 0.10]);
-    }
-  } else {
-    sphere(head, hairMat, [0, 0.22, -0.06], [0.46, 0.28, 0.40]);
-    sphere(head, hairMat, [0, 0.36, 0.08], [0.34, 0.13, 0.30]);
-  }
+function addMannequinHand(parent, finish, side) {
+  sphere(parent, finish, [side * 0.735, 1.02, 0.035], [0.075, 0.125, 0.055]);
+  const fingerLengths = [0.125, 0.16, 0.15, 0.12];
+  fingerLengths.forEach((length, fingerIndex) => {
+    const offset = (fingerIndex - 1.5) * 0.036;
+    const x = side * (0.72 + offset);
+    const middleY = 0.955 - length * 0.52;
+    const tipY = 0.955 - length;
+    segment(parent, finish, [x, 0.955, 0.07], [x + side * 0.005, middleY, 0.08], 0.021, 0.018);
+    segment(parent, finish, [x + side * 0.005, middleY, 0.08], [x + side * 0.008, tipY, 0.075], 0.018, 0.012);
+  });
+  segment(parent, finish, [side * 0.68, 1.045, 0.07], [side * 0.625, 0.94, 0.09], 0.027, 0.019);
+  segment(parent, finish, [side * 0.625, 0.94, 0.09], [side * 0.61, 0.89, 0.085], 0.019, 0.012);
+}
+
+function addMannequinFoot(parent, finish, x) {
+  sphere(parent, finish, [x, 0.085, 0.105], [0.09, 0.07, 0.19]);
+  const toeLengths = [0.055, 0.073, 0.066, 0.058, 0.048];
+  toeLengths.forEach((length, toeIndex) => {
+    const offset = (toeIndex - 2) * 0.032;
+    sphere(parent, finish, [x + offset, 0.052, 0.235 + length * 0.42], [0.021, 0.026, length]);
+  });
 }
 function buildAvatar(state) {
   clearModel();
@@ -174,16 +175,18 @@ function buildAvatar(state) {
   const width = Math.max(0.82, Math.min(1.38, 1 + (bmi - 22) * 0.018));
   const heightScale = Math.max(0.76, Math.min(1.34, height / 165));
   const gender = profile.gender || 'neutro';
-  const skinColor = profile.skin || '#dba77f';
-  const skin = material(skinColor, 0.78);
-  const hairMat = material(gender === 'hombre' ? '#342923' : '#43302a', 0.86);
-  const faceMat = material('#493831', 0.72);
-  const shoeMat = material('#353633', 0.84);
+  const isWoman = gender === 'mujer';
+  const isMan = gender === 'hombre';
+  const mannequin = new THREE.MeshPhysicalMaterial({
+    color: isWoman ? '#f3f4f2' : isMan ? '#9ca3a8' : '#d5d9db',
+    roughness: isWoman ? 0.2 : 0.26,
+    metalness: isWoman ? 0.08 : isMan ? 0.62 : 0.28,
+    clearcoat: 0.76,
+    clearcoatRoughness: 0.14,
+  });
   const body = new THREE.Group();
   body.scale.set(width, heightScale, width);
   pivot.add(body);
-  const isWoman = gender === 'mujer';
-  const isMan = gender === 'hombre';
   // Make shoulder, waist and hip proportions respond visibly to the selected profile.
   const shoulders = isWoman ? 0.405 : isMan ? 0.50 : 0.45;
   const waist = isWoman ? 0.285 : isMan ? 0.355 : 0.33;
@@ -202,36 +205,28 @@ function buildAvatar(state) {
   const onePieceGarment = garments.find(isOnePiece);
 
   // Base mannequin: head, neck, trunk, arms and legs.
-  loft(body, skin, torsoStations);
-  segment(body, skin, [-shoulders + 0.03, 2.16, 0], [-0.65, 1.65, 0], 0.14, 0.105);
-  segment(body, skin, [-0.65, 1.65, 0], [-0.72, 1.14, 0.01], 0.105, 0.075);
-  segment(body, skin, [shoulders - 0.03, 2.16, 0], [0.65, 1.65, 0], 0.14, 0.105);
-  segment(body, skin, [0.65, 1.65, 0], [0.72, 1.14, 0.01], 0.105, 0.075);
+  loft(body, mannequin, torsoStations);
+  if (isWoman) {
+    for (const side of [-1, 1]) sphere(body, mannequin, [side * 0.14, 1.87, 0.20], [0.13, 0.115, 0.075]);
+  }
+  segment(body, mannequin, [-shoulders + 0.03, 2.16, 0], [-0.65, 1.65, 0], 0.14, 0.105);
+  segment(body, mannequin, [-0.65, 1.65, 0], [-0.72, 1.14, 0.01], 0.105, 0.075);
+  segment(body, mannequin, [shoulders - 0.03, 2.16, 0], [0.65, 1.65, 0], 0.14, 0.105);
+  segment(body, mannequin, [0.65, 1.65, 0], [0.72, 1.14, 0.01], 0.105, 0.075);
+  addMannequinHand(body, mannequin, -1);
+  addMannequinHand(body, mannequin, 1);
   const legSpread = isWoman ? 0.20 : 0.18;
   for (const side of [-1, 1]) {
-    segment(body, skin, [side * legSpread, 1.10, 0], [side * legSpread * 1.16, 0.60, 0], 0.16, 0.115);
-    segment(body, skin, [side * legSpread * 1.16, 0.60, 0], [side * legSpread * 1.2, 0.14, 0], 0.115, 0.075);
-    sphere(body, shoeMat, [side * legSpread * 1.2, 0.09, 0.10], [0.12, 0.085, 0.22]);
+    segment(body, mannequin, [side * legSpread, 1.10, 0], [side * legSpread * 1.16, 0.60, 0], 0.16, 0.115);
+    segment(body, mannequin, [side * legSpread * 1.16, 0.60, 0], [side * legSpread * 1.2, 0.14, 0], 0.115, 0.075);
+    addMannequinFoot(body, mannequin, side * legSpread * 1.2);
   }
-  mesh(new THREE.CylinderGeometry(0.115, 0.13, 0.22, 24), skin, body, [0, 2.40, 0]);
+  mesh(new THREE.CylinderGeometry(0.115, 0.13, 0.22, 24), mannequin, body, [0, 2.40, 0]);
   const head = new THREE.Group(); head.position.set(0, 2.72, 0); head.scale.setScalar(0.68); body.add(head);
   const faceProfile = isWoman
     ? [[0.10,-0.43],[0.20,-0.36],[0.27,-0.20],[0.31,0.02],[0.30,0.23],[0.25,0.36],[0.15,0.43],[0,0.44]]
     : [[0.12,-0.43],[0.23,-0.36],[0.30,-0.19],[0.33,0.04],[0.32,0.24],[0.26,0.37],[0.15,0.43],[0,0.44]];
-  const headShape = mesh(new THREE.LatheGeometry(faceProfile.map(([radius, y]) => new THREE.Vector2(radius, y)), 40), skin, head, [0, 0, 0], [1, 1, 0.88]);
-  addHair(head, hairMat, profile.hair || 'short');
-  // Subtle facial features, layered in front of the head so they remain visible with long hair.
-  const eyeWhite = material('#f2eee7', 0.48);
-  const irisMat = material('#59473c', 0.42);
-  for (const side of [-1, 1]) {
-    sphere(head, eyeWhite, [side * 0.12, 0.035, 0.294], [0.043, 0.032, 0.018]);
-    sphere(head, irisMat, [side * 0.12, 0.035, 0.311], [0.018, 0.022, 0.009]);
-    sphere(head, faceMat, [side * 0.12, 0.105, 0.286], [0.047, 0.012, 0.012]);
-    sphere(head, skin, [side * 0.30, -0.04, 0.005], [0.055, 0.10, 0.045]);
-  }
-  sphere(head, skin, [0, -0.055, 0.305], [0.035, 0.055, 0.04]);
-  const mouth = new THREE.Mesh(new THREE.TorusGeometry(0.065, 0.009, 8, 20, Math.PI), faceMat);
-  mouth.position.set(0, -0.16, 0.296); mouth.rotation.z = Math.PI; head.add(mouth);
+  mesh(new THREE.LatheGeometry(faceProfile.map(([radius, y]) => new THREE.Vector2(radius, y)), 48), mannequin, head, [0, 0, 0], [1, 1, 0.88]);
 
   // Generic clothing meshes use only product type and color; no marks or textures.
   if (topGarment) {
@@ -337,7 +332,7 @@ function fromStorage() {
   const products = window.CLOTHES_PRODUCTS || [];
   let ids = getStored('clothes.worn', []); if (!Array.isArray(ids)) ids = ids ? [ids] : [];
   const garments = ids.map(id => products.find(item => item.id === id)).filter(Boolean).map(item => ({ category: item.category, color: item.color, name: item.name }));
-  return { profile: getStored('clothes.profile', { gender: 'neutro', height: 165, weight: 60, hair: 'short', skin: '#dba77f' }), garments };
+  return { profile: getStored('clothes.profile', { gender: 'neutro', height: 165, weight: 60 }), garments };
 }
 window.addEventListener('clothes:avatar-updated', event => buildAvatar(event.detail));
 buildAvatar(fromStorage());

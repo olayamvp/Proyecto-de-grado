@@ -16,14 +16,12 @@
       <label>Presentación<select id="avatarGender" name="gender"><option value="mujer">Mujer</option><option value="hombre">Hombre</option><option value="neutro">Neutro</option></select></label>
       <label class="avatar-range-label" for="avatarHeight"><span>Estatura <output id="avatarHeightValue" for="avatarHeight" aria-live="polite">165 cm</output></span><input id="avatarHeight" name="height" type="range" min="120" max="220" step="1" value="165" aria-valuetext="165 centímetros"></label>
       <label class="avatar-range-label" for="avatarWeight"><span>Peso <output id="avatarWeightValue" for="avatarWeight" aria-live="polite">60 kg</output></span><input id="avatarWeight" name="weight" type="range" min="30" max="250" step="1" value="60" aria-valuetext="60 kilogramos"></label>
-      <label>Cabello<select id="avatarHair" name="hair"><option value="short">Corto</option><option value="long">Largo</option><option value="curly">Rizado</option></select></label>
-      <label>Tono de piel<select id="avatarSkin" name="skin"><option value="#f2cfac">Claro</option><option value="#dba77f">Medio claro</option><option value="#b77b58">Medio</option><option value="#80543d">Oscuro</option></select></label>
       <button class="btn btn-dark" type="submit">Guardar cambios</button><button class="avatar-reset" id="avatarReset" type="button">Restablecer avatar</button>
       <p class="avatar-private">El perfil y el conjunto se guardan en este navegador. La forma corporal es una representación visual, no una recomendación de talla.</p>
     </form>
     <section class="avatar-preview" aria-labelledby="avatarPreviewTitle"><div class="avatar-preview-head"><div><p class="eyebrow">VISTA 3D INTERACTIVA</p><h2 id="avatarPreviewTitle">Tu conjunto</h2></div><span id="avatarMeasures"></span></div>
-      <div id="avatarCanvas" class="avatar-canvas"><div class="avatar-loading">Preparando el avatar 3D…</div></div>
-      <div id="wornItems" class="worn-items"></div><p class="avatar-note">Arrastra para girar y usa la rueda o pellizca para acercar. La ropa es una representación 3D genérica por tipo y color, sin marca ni logos.</p>
+      <div id="avatarCanvas" class="avatar-canvas"><div class="avatar-loading">Preparando el maniquí 3D…</div></div>
+      <div id="wornItems" class="worn-items"></div><p class="avatar-note">Arrastra para girar y usa la rueda o pellizca para acercar. Las prendas se representan en el maniquí por tipo y color, sin marca ni logos.</p>
     </section>
   </section>
   <section class="tryon-section"><div class="tryon-heading"><div><p class="eyebrow">ARMARIO DEL PROBADOR</p><h2>Prendas para combinar</h2></div><a class="text-link" href="./unisex.html">Descubrir más ↗</a></div><p class="tryon-intro">Elige prendas guardadas desde el catálogo. El avatar representa su categoría y color en una forma genérica.</p><div id="tryOnItems" class="tryon-grid"></div></section>
