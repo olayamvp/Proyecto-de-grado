@@ -10,21 +10,82 @@
 </head>
 <body><div id="header"></div>
 <main class="shop-page container avatar-page"><nav class="catalog-breadcrumb" aria-label="Ruta"><a href="../index.html">Inicio</a><span>/</span><span>Mi avatar</span></nav>
-  <section class="catalog-intro"><p class="eyebrow">UN AVATAR A TU MEDIDA</p><h1>Mi avatar<span>.</span></h1><p>Ajusta tu apariencia y arma un conjunto. Gira el modelo para verlo desde distintos ángulos.</p></section>
+  <section class="catalog-intro"><p class="eyebrow">UN AVATAR A TU MEDIDA</p><h1>Mi avatar<span>.</span></h1><p>Crea tu avatar, ajusta tus medidas y pruébate prendas reales del inventario. Gira el modelo para verlo desde distintos ángulos.</p></section>
   <section class="avatar-workspace">
-    <form id="avatarForm" class="avatar-profile"><p class="eyebrow">TU PERFIL</p><h2>Personaliza tu avatar</h2>
-      <label>Presentación<select id="avatarGender" name="gender"><option value="mujer">Mujer</option><option value="hombre">Hombre</option><option value="neutro">Neutro</option></select></label>
-      <label class="avatar-range-label" for="avatarHeight"><span>Estatura <output id="avatarHeightValue" for="avatarHeight" aria-live="polite">165 cm</output></span><input id="avatarHeight" name="height" type="range" min="120" max="220" step="1" value="165" aria-valuetext="165 centímetros"></label>
-      <label class="avatar-range-label" for="avatarWeight"><span>Peso <output id="avatarWeightValue" for="avatarWeight" aria-live="polite">60 kg</output></span><input id="avatarWeight" name="weight" type="range" min="30" max="250" step="1" value="60" aria-valuetext="60 kilogramos"></label>
-      <button class="btn btn-dark" type="submit">Guardar cambios</button><button class="avatar-reset" id="avatarReset" type="button">Restablecer avatar</button>
-      <p class="avatar-private">El perfil y el conjunto se guardan en este navegador. La forma corporal es una representación visual, no una recomendación de talla.</p>
+    <form id="avatarForm" class="avatar-profile" novalidate><p class="eyebrow">TU PERFIL</p><h2>Personaliza tu avatar</h2>
+      <fieldset class="avatar-group" data-focus="body"><legend>Cuerpo</legend>
+        <div class="avatar-segmented" role="radiogroup" aria-label="Tipo de cuerpo">
+          <label><input type="radio" name="gender" value="mujer"><span>Mujer</span></label>
+          <label><input type="radio" name="gender" value="hombre"><span>Hombre</span></label>
+        </div>
+        <label class="avatar-range-label" for="avatarHeight"><span>Estatura <output id="avatarHeightValue" for="avatarHeight" aria-live="polite">163 cm</output></span><input id="avatarHeight" name="height" type="range" min="140" max="210" step="1" value="163" aria-valuetext="163 centímetros"></label>
+        <label class="avatar-range-label" for="avatarWeight"><span>Peso <output id="avatarWeightValue" for="avatarWeight" aria-live="polite">58 kg</output></span><input id="avatarWeight" name="weight" type="range" min="40" max="160" step="1" value="58" aria-valuetext="58 kilogramos"></label>
+        <div class="avatar-field"><span id="skinLabel">Tono de piel</span>
+          <div class="avatar-swatches" role="radiogroup" aria-labelledby="skinLabel">
+            <label style="--swatch:#f6d7c3"><input type="radio" name="skin" value="#f6d7c3" aria-label="Muy claro"></label>
+            <label style="--swatch:#eec1a2"><input type="radio" name="skin" value="#eec1a2" aria-label="Claro"></label>
+            <label style="--swatch:#e0a982"><input type="radio" name="skin" value="#e0a982" aria-label="Claro medio"></label>
+            <label style="--swatch:#c98e65"><input type="radio" name="skin" value="#c98e65" aria-label="Medio"></label>
+            <label style="--swatch:#a8714c"><input type="radio" name="skin" value="#a8714c" aria-label="Moreno"></label>
+            <label style="--swatch:#8a5a3b"><input type="radio" name="skin" value="#8a5a3b" aria-label="Moreno oscuro"></label>
+            <label style="--swatch:#6b4330"><input type="radio" name="skin" value="#6b4330" aria-label="Oscuro"></label>
+            <label style="--swatch:#4a2e22"><input type="radio" name="skin" value="#4a2e22" aria-label="Muy oscuro"></label>
+          </div>
+        </div>
+      </fieldset>
+      <fieldset class="avatar-group" data-focus="face"><legend>Cabello</legend>
+        <label>Peinado<select name="hairStyle">
+          <option value="corto">Corto</option><option value="rapado">Rapado</option><option value="rizado">Rizado</option><option value="afro">Afro</option>
+          <option value="bob">Bob</option><option value="largo">Largo</option><option value="cola">Cola de caballo</option><option value="mono">Moño</option><option value="calvo">Sin cabello</option>
+        </select></label>
+        <div class="avatar-field"><span id="hairColorLabel">Color de cabello</span>
+          <div class="avatar-swatches" role="radiogroup" aria-labelledby="hairColorLabel">
+            <label style="--swatch:#1f1a17"><input type="radio" name="hairColor" value="#1f1a17" aria-label="Negro"></label>
+            <label style="--swatch:#3b2a20"><input type="radio" name="hairColor" value="#3b2a20" aria-label="Castaño oscuro"></label>
+            <label style="--swatch:#6a4630"><input type="radio" name="hairColor" value="#6a4630" aria-label="Castaño"></label>
+            <label style="--swatch:#9c7448"><input type="radio" name="hairColor" value="#9c7448" aria-label="Rubio oscuro"></label>
+            <label style="--swatch:#d4b27a"><input type="radio" name="hairColor" value="#d4b27a" aria-label="Rubio"></label>
+            <label style="--swatch:#a5482a"><input type="radio" name="hairColor" value="#a5482a" aria-label="Pelirrojo"></label>
+            <label style="--swatch:#a8a6a2"><input type="radio" name="hairColor" value="#a8a6a2" aria-label="Gris"></label>
+            <label style="--swatch:#d98fae"><input type="radio" name="hairColor" value="#d98fae" aria-label="Rosa"></label>
+          </div>
+        </div>
+      </fieldset>
+      <fieldset class="avatar-group" data-focus="face"><legend>Cara</legend>
+        <div class="avatar-field"><span id="eyeColorLabel">Color de ojos</span>
+          <div class="avatar-swatches" role="radiogroup" aria-labelledby="eyeColorLabel">
+            <label style="--swatch:#3b2416"><input type="radio" name="eyeColor" value="#3b2416" aria-label="Café oscuro"></label>
+            <label style="--swatch:#6b4423"><input type="radio" name="eyeColor" value="#6b4423" aria-label="Café"></label>
+            <label style="--swatch:#8a6a2f"><input type="radio" name="eyeColor" value="#8a6a2f" aria-label="Avellana"></label>
+            <label style="--swatch:#4f7a4a"><input type="radio" name="eyeColor" value="#4f7a4a" aria-label="Verde"></label>
+            <label style="--swatch:#4a7bb0"><input type="radio" name="eyeColor" value="#4a7bb0" aria-label="Azul"></label>
+            <label style="--swatch:#7b8a93"><input type="radio" name="eyeColor" value="#7b8a93" aria-label="Gris"></label>
+          </div>
+        </div>
+        <div class="avatar-pair">
+          <label>Forma de ojos<select name="eyeShape"><option value="redondos">Redondos</option><option value="almendrados">Almendrados</option><option value="rasgados">Rasgados</option></select></label>
+          <label>Cejas<select name="brows"><option value="finas">Finas</option><option value="normales">Normales</option><option value="gruesas">Gruesas</option></select></label>
+        </div>
+        <label data-only="hombre">Barba<select name="beard"><option value="ninguna">Sin barba</option><option value="corta">Barba corta</option><option value="completa">Barba completa</option><option value="bigote">Bigote</option><option value="candado">Candado</option></select></label>
+      </fieldset>
+      <button class="avatar-reset" id="avatarReset" type="button">Restablecer avatar</button>
+      <p class="avatar-private">Los cambios se guardan solos en este navegador. La forma corporal es una representación visual, no una recomendación de talla.</p>
     </form>
-    <section class="avatar-preview" aria-labelledby="avatarPreviewTitle"><div class="avatar-preview-head"><div><p class="eyebrow">VISTA 3D INTERACTIVA</p><h2 id="avatarPreviewTitle">Tu conjunto</h2></div><span id="avatarMeasures"></span></div>
-      <div id="avatarCanvas" class="avatar-canvas"><div class="avatar-loading">Preparando el maniquí 3D…</div></div>
-      <div id="wornItems" class="worn-items"></div><p class="avatar-note">Arrastra para girar y usa la rueda o pellizca para acercar. Las prendas se representan en el maniquí por tipo y color, sin marca ni logos.</p>
+    <section class="avatar-preview" aria-labelledby="avatarPreviewTitle"><div class="avatar-preview-head"><div><p class="eyebrow">VISTA 3D INTERACTIVA</p><h2 id="avatarPreviewTitle">Tu avatar</h2></div><span id="avatarMeasures"></span></div>
+      <div class="avatar-stage">
+        <div id="avatarCanvas" class="avatar-canvas"><div class="avatar-loading">Preparando tu avatar 3D…</div></div>
+        <div class="avatar-view" role="group" aria-label="Encuadre"><button type="button" data-view="body" aria-pressed="true">Cuerpo</button><button type="button" data-view="face" aria-pressed="false">Cara</button></div>
+        <p id="avatarStatus" class="avatar-status" aria-live="polite"></p>
+      </div>
+      <div id="wornItems" class="worn-items" aria-label="Prendas puestas"></div><p class="avatar-note">Arrastra para girar y usa la rueda o pellizca para acercar. Cada prenda toma el color, la tela y el diseño de la foto real del producto; la caída y el ajuste son aproximados.</p>
     </section>
   </section>
-  <section class="tryon-section"><div class="tryon-heading"><div><p class="eyebrow">ARMARIO DEL PROBADOR</p><h2>Prendas para combinar</h2></div><a class="text-link" href="./unisex.html">Descubrir más ↗</a></div><p class="tryon-intro">Elige prendas guardadas desde el catálogo. El avatar representa su categoría y color en una forma genérica.</p><div id="tryOnItems" class="tryon-grid"></div></section>
+  <section class="tryon-section"><div class="tryon-heading"><div><p class="eyebrow">ARMARIO DEL PROBADOR</p><h2>Prendas para probar</h2></div>
+      <div class="tryon-tools">
+        <div class="tryon-tabs" role="tablist" aria-label="Origen de las prendas"><button type="button" role="tab" data-source="saved" aria-selected="true">Guardadas</button><button type="button" role="tab" data-source="inventory" aria-selected="false">Inventario</button></div>
+        <select id="tryOnFilter" aria-label="Tipo de prenda"><option value="all">Todas</option><option value="top">Parte de arriba</option><option value="bottom">Parte de abajo</option><option value="onePiece">Vestidos y bodies</option><option value="set">Conjuntos</option></select>
+      </div>
+    </div><p class="tryon-intro" id="tryOnIntro">Prendas que guardaste desde el catálogo con «Probar».</p><div id="tryOnItems" class="tryon-grid"></div><button type="button" id="tryOnMore" class="tryon-more" hidden>Ver más prendas</button></section>
 </main>
-<script src="../bootstrap/js/bootstrap.bundle.min.js"></script><script src="./js/clothes-data.js"></script><script src="./js/probador.js"></script><script type="module" src="./js/avatar-3d.js"></script></body>
+<script src="../bootstrap/js/bootstrap.bundle.min.js"></script><script src="./js/clothes-data.js"></script><script src="./js/avatar-tipos.js"></script><script src="./js/probador.js"></script><script type="module" src="./js/avatar-3d.js"></script></body>
 </html>
