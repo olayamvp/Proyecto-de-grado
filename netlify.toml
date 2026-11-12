@@ -1,0 +1,5 @@
+# Funciones de servidor para Netlify (analítica, configuración pública y panel admin).
+# El sitio sigue publicándose como hasta ahora: HTML estático en la raíz, sin build.
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
