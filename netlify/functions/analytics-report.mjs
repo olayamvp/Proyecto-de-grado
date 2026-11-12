@@ -1,7 +1,10 @@
 // GET /api/analytics/report — métricas por marca, producto y día, en JSON o CSV.
 // Solo administradores (token de Supabase + rol admin en user_roles). Solo lectura.
+// source=reales (por defecto) lee Supabase; source=simulados lee el conjunto de demostración
+// incluido con la función (netlify/lib/simulados.mjs), siempre marcado como simulado.
 import { authenticatedUser, settings } from '../../api/_supabase.js';
 import { toCsv } from '../lib/eventos.mjs';
+import { SIMULATED_DATASET, simulatedDailyBrand, simulatedDailyProduct, simulatedEvents } from '../lib/simulados.mjs';
 
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
 const PAGE_SIZE = 1000;
@@ -38,6 +41,9 @@ export function createHandler({ fetchImpl = fetch, getSettings = settings, authe
     const params = new URL(request.url).searchParams;
     const from = params.get('from'), to = params.get('to');
     const view = params.get('view') || 'marcas', format = params.get('format') || 'json';
+    const source = params.get('source') || 'reales';
+    if (!['reales', 'simulados'].includes(source)) return reply(400, { error: 'parametros_invalidos' });
+    const simulated = source === 'simulados';
     if (!DAY.test(from || '') || !DAY.test(to || '') || from > to) return reply(400, { error: 'fechas_invalidas' });
     if ((Date.parse(to) - Date.parse(from)) / 86_400_000 > 731) return reply(400, { error: 'periodo_muy_largo' });
     if (!VIEWS[view] || !['json', 'csv'].includes(format)) return reply(400, { error: 'parametros_invalidos' });
@@ -58,10 +64,10 @@ export function createHandler({ fetchImpl = fetch, getSettings = settings, authe
     const instantRange = `occurred_at=gte.${from}T05:00:00Z&occurred_at=lt.${new Date(Date.parse(`${to}T05:00:00Z`) + 86_400_000).toISOString()}`;
     let rows;
     try {
-      if (view === 'eventos') rows = await readAll(`analytics_events?select=${VIEWS.eventos.join(',')}&${instantRange}&order=occurred_at.asc,event_id.asc`);
-      else if (view === 'productos') rows = sumBy(await readAll(`analytics_daily_product?select=*&${dayRange}&order=day.asc`), ['brand_id', 'product_id'], VIEWS.productos.slice(2));
+      if (view === 'eventos') rows = simulated ? await simulatedEvents(from, to) : await readAll(`analytics_events?select=${VIEWS.eventos.join(',')}&${instantRange}&order=occurred_at.asc,event_id.asc`);
+      else if (view === 'productos') rows = sumBy(simulated ? await simulatedDailyProduct(from, to) : await readAll(`analytics_daily_product?select=*&${dayRange}&order=day.asc`), ['brand_id', 'product_id'], VIEWS.productos.slice(2));
       else {
-        const daily = await readAll(`analytics_daily_brand?select=*&${dayRange}&order=day.asc,brand_id.asc`);
+        const daily = simulated ? await simulatedDailyBrand(from, to) : await readAll(`analytics_daily_brand?select=*&${dayRange}&order=day.asc,brand_id.asc`);
         rows = view === 'diario_marca' ? daily
           : view === 'diario' ? sumBy(daily, ['day'], VIEWS.diario.slice(1))
           : sumBy(daily, ['brand_id'], VIEWS.marcas.slice(1));
@@ -72,14 +78,16 @@ export function createHandler({ fetchImpl = fetch, getSettings = settings, authe
     }
     if (view === 'marcas' || view === 'productos') rows.sort((a, b) => b.add_to_cart_events - a.add_to_cart_events || b.outbound_clicks - a.outbound_clicks || String(a.product_id ?? a.brand_id).localeCompare(String(b.product_id ?? b.brand_id)));
     if (format === 'csv') {
-      return new Response(toCsv(rows, VIEWS[view]), { status: 200, headers: {
+      // Los CSV simulados llevan una columna y un nombre de archivo que lo dicen explícitamente.
+      const csv = simulated ? toCsv(rows.map(row => ({ datos: 'SIMULADOS', ...row })), ['datos', ...VIEWS[view]]) : toCsv(rows, VIEWS[view]);
+      return new Response(csv, { status: 200, headers: {
         'Content-Type': 'text/csv; charset=utf-8', 'Cache-Control': 'no-store',
-        'Content-Disposition': `attachment; filename="novum-analitica-${view}-${from}_${to}.csv"`,
+        'Content-Disposition': `attachment; filename="novum-analitica-${simulated ? 'SIMULADOS-' : ''}${view}-${from}_${to}.csv"`,
       } });
     }
     const totals = view === 'eventos' ? { events: rows.length } : sumBy(rows.map(row => ({ ...row, all: 'total' })), ['all'], ['add_to_cart_events', 'units_added', 'outbound_clicks'])[0] || { add_to_cart_events: 0, units_added: 0, outbound_clicks: 0 };
     delete totals.all;
-    return reply(200, { from, to, view, timezone: 'America/Bogota', generated_at: new Date().toISOString(), totals, rows });
+    return reply(200, { from, to, view, source, simulated, ...(simulated && { dataset: SIMULATED_DATASET }), timezone: 'America/Bogota', generated_at: new Date().toISOString(), totals, rows });
   };
 }
 

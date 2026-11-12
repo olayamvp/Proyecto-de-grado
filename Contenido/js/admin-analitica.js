@@ -25,8 +25,11 @@
     names.brandCount = new Set((window.CLOTHES_PRODUCTS || []).map(product => slug(product.brand))).size;
   });
 
+  // Fuente: datos reales (Supabase) o el conjunto simulado de octubre, siempre señalado como tal.
+  const SIMULATED_RANGE = ['2026-10-01', '2026-10-31'];
+  let source = 'reales';
   const request = (view, format = 'json') => {
-    const params = new URLSearchParams({ from: fromInput.value, to: toInput.value, view, format });
+    const params = new URLSearchParams({ from: fromInput.value, to: toInput.value, view, format, source });
     return fetch(`/api/analytics/report?${params}`, { headers: { Authorization: `Bearer ${sessionStorage.getItem('novum.accessToken')}` } });
   };
   const failure = async response => {
@@ -133,7 +136,7 @@
       productRows = products.rows;
       showAllProducts = false;
       renderProducts();
-      message.textContent = `Del ${longDay(brands.from)} al ${longDay(brands.to)} · actualizado ${new Date(brands.generated_at).toLocaleTimeString('es-CO', { hour: 'numeric', minute: '2-digit' })}`;
+      message.textContent = `${brands.simulated ? 'DATOS SIMULADOS · ' : ''}Del ${longDay(brands.from)} al ${longDay(brands.to)} · actualizado ${new Date(brands.generated_at).toLocaleTimeString('es-CO', { hour: 'numeric', minute: '2-digit' })}`;
     } catch { message.textContent = 'No se pudo conectar con el servidor de analítica.'; }
   }
 
@@ -143,6 +146,17 @@
     if (days) { fromInput.value = bogotaDay(-(days - 1)); toInput.value = bogotaDay(0); }
   };
   presets.forEach(button => button.addEventListener('click', () => { setPreset(Number(button.dataset.range)); load(); }));
+  const sources = [...document.querySelectorAll('[data-source]')];
+  sources.forEach(button => button.addEventListener('click', () => {
+    if (button.dataset.source === source) return;
+    source = button.dataset.source;
+    sources.forEach(other => other.setAttribute('aria-pressed', String(other === button)));
+    const simulated = source === 'simulados';
+    $('simulatedBanner').hidden = !simulated;
+    form.closest('.admin-page')?.classList.toggle('is-simulated', simulated);
+    if (simulated) { setPreset(0); [fromInput.value, toInput.value] = SIMULATED_RANGE; } else setPreset(30);
+    load();
+  }));
   [fromInput, toInput].forEach(input => input.addEventListener('input', () => setPreset(0)));
   form.addEventListener('submit', event => { event.preventDefault(); load(); });
 

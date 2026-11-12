@@ -178,3 +178,17 @@ Limitaciones pendientes:
 - El límite por IP lo aplica Netlify sin almacenarla en la base.
 - Antes de activar la analítica en producción se recomienda publicar un aviso de privacidad que informe esta finalidad, conforme a la Ley 1581 de 2012 y el Decreto 1377 de 2013. El sitio aún no tiene esa página.
 - La analítica previa (`novum.visitorId`, persistente en `localStorage`) sigue existiendo y conviene evaluarla con el mismo criterio de minimización.
+
+## Datos simulados (octubre de 2026)
+
+El panel tiene un selector **Datos reales / Simulados (oct.)**. Los simulados son un conjunto de
+demostración de 10.861 eventos (1.215 agregados al carrito y 9.646 clics a tiendas) recibido como
+`2026-10-01_2026-10-31.csv`. **No son mediciones**: la analítica real empezó el 11 de noviembre de
+2026, y el archivo usa el catálogo depurado de noviembre (247 prendas).
+
+- Viven en `netlify/lib/eventos-simulados-2026-10.mjs` y se incluyen con la función del reporte;
+  **nunca se cargan en Supabase**, así que no se mezclan con `analytics_events`.
+- `GET /api/analytics/report?...&source=simulados` los consulta; la respuesta trae `simulated: true`.
+- En el panel aparece un aviso visible y los indicadores llevan la marca «sim.».
+- Los CSV exportados se llaman `novum-analitica-SIMULADOS-…` y su primera columna es `datos=SIMULADOS`.
+- Para quitarlos: borrar ese archivo, `netlify/lib/simulados.mjs` y el selector del panel.

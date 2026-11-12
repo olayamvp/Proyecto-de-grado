@@ -189,3 +189,22 @@ test('la paginación del reporte no trunca periodos con más de 1000 eventos', a
   const body = await (await get('from=2026-11-01&to=2026-11-30&view=eventos')).json();
   assert.equal(body.rows.length, 1505);
 });
+test('los datos simulados se leen aparte, nunca de Supabase, y quedan marcados', async () => {
+  const { fake, get } = await reportSetup();
+  const before = fake.state.requests;
+  const brands = await (await get('from=2026-10-01&to=2026-10-31&view=marcas&source=simulados')).json();
+  assert.equal(fake.state.requests, before, 'no consulta Supabase');
+  assert.equal(brands.simulated, true);
+  assert.deepEqual(brands.totals, { add_to_cart_events: 1215, units_added: 1215, outbound_clicks: 9646 });
+  const events = await (await get('from=2026-10-01&to=2026-10-31&view=eventos&source=simulados')).json();
+  assert.equal(events.rows.length, 10861);
+  const daily = await (await get('from=2026-10-01&to=2026-10-01&view=diario&source=simulados')).json();
+  assert.equal(daily.rows[0].add_to_cart_events + daily.rows[0].outbound_clicks, 236); // día de Bogotá
+  const csv = await get('from=2026-10-01&to=2026-10-31&view=marcas&format=csv&source=simulados');
+  assert.match(csv.headers.get('content-disposition'), /novum-analitica-SIMULADOS-marcas/);
+  assert.match((await csv.text()).split('\r\n')[1], /^SIMULADOS,/);
+  const real = await (await get('from=2026-10-01&to=2026-10-31&view=marcas')).json();
+  assert.equal(real.simulated, false);
+  assert.equal(real.totals.outbound_clicks, 0, 'los datos reales no incluyen los simulados');
+  assert.equal((await get('from=2026-10-01&to=2026-10-31&source=otro')).status, 400);
+});
