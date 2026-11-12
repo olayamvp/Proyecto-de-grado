@@ -3,7 +3,7 @@ import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { basename, resolve, join } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { validateEvent } from '../netlify/lib/eventos.mjs';
+import { validateEvent, toCsv } from '../netlify/lib/eventos.mjs';
 import catalog from '../netlify/lib/catalogo-indice.json' with { type: 'json' };
 
 export const COLUMNS = ['event_id', 'event_type', 'event_version', 'occurred_at', 'received_at', 'brand_id', 'product_id', 'related_product_ids', 'session_id', 'quantity', 'source_page', 'source_component', 'destination_type', 'catalog_verified'];
@@ -164,6 +164,18 @@ COMMIT;
 `;
 }
 
+export function stagedRestoration(rows, summary, sha256) {
+  const table = `analytics_restore_${summary.from.replaceAll('-', '')}_${summary.to.replaceAll('-', '')}`;
+  const columns = COLUMNS.join(', ');
+  const setup = `-- Ejecutar en SQL Editor ANTES de importar el CSV.\nCREATE TABLE IF NOT EXISTS public.${table} (LIKE public.analytics_events INCLUDING DEFAULTS INCLUDING CONSTRAINTS);\nCREATE UNIQUE INDEX IF NOT EXISTS ${table}_event_id ON public.${table}(event_id);\nALTER TABLE public.${table} ENABLE ROW LEVEL SECURITY;\nREVOKE ALL ON public.${table} FROM anon, authenticated, service_role;\n`;
+  // PostgreSQL espera literales de arrays, no la representación con | del CSV de reportes.
+  const csv = toCsv(rows.map(row => ({ ...row, related_product_ids: `{${row.related_product_ids.map(id => `"${id.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`).join(',')}}` })), COLUMNS);
+  const load = `INSERT INTO novum_restore_events (${columns}) SELECT ${columns} FROM public.${table};\nDO $period_check$\nBEGIN\n  IF EXISTS (SELECT 1 FROM novum_restore_events WHERE (occurred_at AT TIME ZONE 'America/Bogota')::date NOT BETWEEN DATE '${summary.from}' AND DATE '${summary.to}')\n     OR (SELECT count(*) FROM novum_restore_events WHERE event_type = 'add_to_cart') <> ${summary.add_to_cart_events}\n     OR (SELECT coalesce(sum(quantity), 0) FROM novum_restore_events) <> ${summary.units_added}\n     OR (SELECT count(*) FROM novum_restore_events WHERE event_type = 'outbound_click') <> ${summary.outbound_clicks}\n     OR (SELECT count(DISTINCT brand_id) FROM novum_restore_events) <> ${summary.brands} THEN\n    RAISE EXCEPTION 'La tabla de carga no coincide con el periodo y los totales esperados.';\n  END IF;\nEND;\n$period_check$;\n`;
+  const createTemp = 'CREATE TEMP TABLE novum_restore_events (LIKE public.analytics_events INCLUDING DEFAULTS INCLUDING CONSTRAINTS) ON COMMIT DROP;';
+  const finish = restorationSql([], summary, sha256).replace('-- Ejecutar COMPLETO en Supabase > SQL Editor > New query > Run.', `-- Ejecutar DESPUÉS de importar eventos-para-importar.csv en public.${table}.`).replace(createTemp, createTemp + '\n' + load);
+  return { table, setup, csv, finish };
+}
+
 async function main() {
   const args = process.argv.slice(2);
   const options = {};
@@ -179,6 +191,10 @@ async function main() {
   const manifest = { source_file: basename(input), source_sha256: sha256, provenance: 'Datos históricos recuperados de un análisis previo, según confirmación del usuario.', ...summary, status: 'preparado; ejecución en Supabase pendiente', preserved_fields: COLUMNS };
   await mkdir(output, { recursive: true });
   await writeFile(join(output, 'restaurar-eventos.sql'), restorationSql(rows, summary, sha256));
+  const staged = stagedRestoration(rows, summary, sha256);
+  await writeFile(join(output, '01-crear-tabla-carga.sql'), staged.setup);
+  await writeFile(join(output, 'eventos-para-importar.csv'), staged.csv);
+  await writeFile(join(output, '02-confirmar-restauracion.sql'), staged.finish);
   await writeFile(join(output, 'resumen.json'), JSON.stringify(manifest, null, 2) + '\n');
   console.log(JSON.stringify({ ...summary, source_sha256: sha256, sql: join(output, 'restaurar-eventos.sql'), database_written: false }, null, 2));
 }
