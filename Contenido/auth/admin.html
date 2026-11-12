@@ -31,9 +31,6 @@ html[data-theme="dark"] .presets button[aria-pressed="true"]{background:#f6f4ef;
 .dash-foot{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--line-soft)}
 .more{border:0;background:transparent;color:inherit;text-decoration:underline;font-size:.88rem;padding:.4rem 0}
 details.admin-panel>summary{cursor:pointer;font-size:1.25rem;font-weight:500;list-style:none}details.admin-panel>summary::after{content:"＋";float:right;color:var(--muted-ink)}details.admin-panel[open]>summary::after{content:"－"}
-.sim-banner{display:flex;gap:.7rem;align-items:flex-start;margin:.6rem 0 .2rem;padding:.75rem 1rem;border:1px dashed #b7791f;border-radius:12px;background:#fdf5e6;color:#6b4508;font-size:.9rem}.sim-banner strong{display:block;font-size:.95rem}
-html[data-theme="dark"] .sim-banner{background:#2e2414;color:#f3d29a;border-color:#c9922e}
-.admin-page.is-simulated .kpi strong::after{content:" sim.";font-size:.8rem;font-weight:500;color:#b7791f}
 @media(max-width:860px){.dash-grid{grid-template-columns:1fr}}
 </style></head><body><div id="header"></div><main class="container admin-page">
 <section class="admin-head"><div><p class="eyebrow">NOVUM LABEL · CONTROL</p><h1>Administración<span>.</span></h1><p id="adminIdentity"></p></div><button id="logoutButton" type="button">Cerrar sesión</button></section>
@@ -41,11 +38,9 @@ html[data-theme="dark"] .sim-banner{background:#2e2414;color:#f3d29a;border-colo
 <section class="admin-panel" aria-labelledby="analyticsTitle">
   <div class="dash-head"><div><h2 id="analyticsTitle">Interacciones en la plataforma</h2><p class="admin-small">Agregados al carrito y clics hacia las tiendas oficiales registrados en Novum Label. Son intenciones de compra, no ventas confirmadas. Días en hora de Bogotá.</p></div></div>
   <form id="analyticsForm" class="dash-filters">
-    <div class="presets" role="group" aria-label="Fuente de datos"><button type="button" data-source="reales" aria-pressed="true">Datos reales</button><button type="button" data-source="simulados" aria-pressed="false">Simulados (oct.)</button></div>
     <div class="presets" role="group" aria-label="Periodo"><button type="button" data-range="7">7 días</button><button type="button" data-range="30" aria-pressed="true">30 días</button><button type="button" data-range="90">90 días</button></div>
     <label>Desde<input type="date" id="analyticsFrom" required></label><label>Hasta<input type="date" id="analyticsTo" required></label><button class="apply" type="submit">Aplicar</button>
   </form>
-  <div id="simulatedBanner" class="sim-banner" role="note" hidden><span aria-hidden="true">⚠</span><div><strong>Datos simulados: no son mediciones reales</strong>Conjunto de demostración de octubre de 2026. La medición real empezó el 11 de noviembre de 2026 y se guarda aparte; estos eventos no se mezclan con ella. Los CSV exportados se marcan como SIMULADOS.</div></div>
   <p id="analyticsMessage" class="admin-alert" role="status" aria-live="polite"></p>
   <div class="kpis">
     <article class="kpi"><span>Agregados al carrito</span><strong id="totalAdds">—</strong><small>acciones de «Añadir al carrito»</small></article>
