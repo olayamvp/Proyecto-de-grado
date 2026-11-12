@@ -182,3 +182,17 @@ html[data-theme="dark"] .discovery-search input { color: var(--ink); background:
   .search-product-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px 10px; }
 }
 .brand-directory-info h2 { margin: 10px 0 0; font-size: 19px; font-weight: 500; letter-spacing: -.03em; }
+
+/* Acciones de prenda e Instagram de la marca (acciones-prenda.js) */
+.search-product .product-actions,.brand-preview-actions .product-actions { flex-wrap: wrap; margin-top: 10px; }
+.search-product .product-size-choice,.brand-preview-actions .product-size-choice { flex: 1 0 100%; }
+.search-product .product-size-choice select,.brand-preview-actions .product-size-choice select { width: 100%; min-height: 34px; border: 1px solid var(--line,rgba(25,25,23,.18)); padding: 0 9px; color: var(--ink); background: var(--page); font-size: 10px; }
+.instagram-link,.brand-instagram { display: inline-flex; align-items: center; gap: 5px; margin-top: 8px; color: var(--ink,#191917); font-size: 10px; text-decoration: none; }
+.instagram-link:hover,.brand-instagram:hover { text-decoration: underline; }
+.search-product .instagram-link { display: flex; }
+.brand-instagram { margin: 0 0 14px; font-size: 11px; }
+.brand-preview-actions { width: 100%; margin: 0 0 16px; padding-top: 12px; border-top: 1px solid var(--line,rgba(25,25,23,.14)); }
+.brand-preview-actions > p { margin: 0; color: var(--muted,#77766f); font-size: 9px; }
+.official-product-link.instagram-link { margin-left: 12px; }
+.instagram-button { margin-left: 6px; }
+.prenda-notice { position: fixed; left: 50%; bottom: 24px; z-index: 1050; transform: translateX(-50%); margin: 0; padding: 10px 16px; color: var(--page,#f6f4ef); background: var(--ink,#191917); font-size: 12px; box-shadow: 0 8px 24px rgba(0,0,0,.18); }

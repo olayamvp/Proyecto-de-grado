@@ -24,8 +24,8 @@ window.CLOTHES_PRODUCTS = [
   { id: 'mattelsa-hoodie-oversize-black-icon', name: 'Buzo Hoodie Oversize Negro Ícono', brand: 'Mattelsa', audience: 'hombre', category: 'Hoodies', styles: ['Streetwear', 'Casual'], price: 249000, color: 'Negro', sizes: ['S', 'M', 'L', 'XL'], image: 'https://b2cmattelsa.vtexassets.com/arquivos/ids/747847-800-auto?aspect=true&height=auto&v=639252798838930000&width=800', logo: '', officialUrl: 'https://www.mattelsa.net/buzo-hoodie-oversize-negro-icono-95049/p', description: 'Hoodie oversize negro con gráfico Ícono. Consulta tallas, disponibilidad y precio vigente en la tienda oficial.' },
   { id: 'true-racing-carpenter-jeans-gray-men', name: 'Racing Carpenter Jeans Gris', brand: 'True', audience: 'hombre', category: 'Jeans', styles: ['Streetwear', 'Vintage'], price: 320000, color: 'Gris', sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'], image: 'https://trueshop.co/cdn/shop/files/Racing-Carpenter-Jeans---Gray_1_1_1200x1200.jpg?v=1770654290', logo: '../Imagenes/Marcas/True/true_logo.png', officialUrl: 'https://trueshop.co/products/racing-carpenter-jeans-gray', description: 'Jean gris estilo carpintero, tiro medio y bota ancha; la tienda lo identifica como silueta masculina.' },
   { id: 'true-racing-camo-carpenter-men', name: 'Racing Camo Carpenter Pants Verde', brand: 'True', audience: 'hombre', category: 'Pantalones', styles: ['Streetwear', 'Techwear'], price: 320000, color: 'Verde', sizes: ['L', 'XL', 'XXL'], image: 'https://trueshop.co/cdn/shop/files/Racing-Camo-Carpenter-Pants---Green_1_1_24e35652-e1ad-4100-b3b8-592359037524_1200x1200.jpg?v=1771273910', logo: '../Imagenes/Marcas/True/true_logo.png', officialUrl: 'https://trueshop.co/products/racing-camo-carpenter-pants-green', description: 'Pantalón cargo carpintero con estampado camuflado y silueta masculina. En la tienda oficial aparecen tallas L, XL y XXL disponibles al consultar.' },
-  { id: 'anewcross-armour-tee-men', name: 'Armour T-Shirt in Cotton Gris', brand: 'A New Cross', audience: 'hombre', category: 'Camisetas', styles: ['Streetwear', 'Minimalista'], price: 300000, color: 'Gris', sizes: ['S', 'M', 'L', 'XL'], image: 'https://anewcross.com/cdn/shop/files/CAMISETAARMOURGRIS1_453c34e9-bd4c-44e3-87dd-b2551bd43e4b.jpg?v=1693948423&width=800', logo: '', officialUrl: 'https://anewcross.com/products/armour-t-shirt-in-cotton', description: 'Camiseta masculina Armour en algodón Pima peruano, con estructura semiajustada. Precio publicado en la colección masculina.' },
-  { id: 'anewcross-ranglan-sweatshirt-men', name: 'Ranglan Sleeve Sweatshirt in Cotton', brand: 'A New Cross', audience: 'hombre', category: 'Buzos', styles: ['Streetwear', 'Casual'], price: 450000, color: 'Gris', sizes: ['S', 'M', 'L', 'XL'], image: 'https://anewcross.com/cdn/shop/files/CAMISETARANGLANMANGALARGA_1_a4d88d7c-a7f6-423a-b55e-d9fb0b8df1a4.jpg?v=1749681754&width=800', logo: '', officialUrl: 'https://anewcross.com/products/ranglan-sleeve-sweatshirt-in-cotton', description: 'Sudadera de manga raglán confeccionada en algodón. Producto incluido en la colección de hombre de A New Cross.' },
+  { id: 'anewcross-armour-tee-men', name: 'Armour T-Shirt in Cotton Gris', brand: 'A New Cross', audience: 'hombre', category: 'Camisetas', styles: ['Streetwear', 'Minimalista', 'Old Money'], price: 300000, color: 'Gris', sizes: ['S', 'M', 'L', 'XL'], image: 'https://anewcross.com/cdn/shop/files/CAMISETAARMOURGRIS1_453c34e9-bd4c-44e3-87dd-b2551bd43e4b.jpg?v=1693948423&width=800', logo: '', officialUrl: 'https://anewcross.com/products/armour-t-shirt-in-cotton', description: 'Camiseta masculina Armour en algodón Pima peruano, con estructura semiajustada. Precio publicado en la colección masculina.' },
+  { id: 'anewcross-ranglan-sweatshirt-men', name: 'Ranglan Sleeve Sweatshirt in Cotton', brand: 'A New Cross', audience: 'hombre', category: 'Buzos', styles: ['Streetwear', 'Casual', 'Old Money'], price: 450000, color: 'Gris', sizes: ['S', 'M', 'L', 'XL'], image: 'https://anewcross.com/cdn/shop/files/CAMISETARANGLANMANGALARGA_1_a4d88d7c-a7f6-423a-b55e-d9fb0b8df1a4.jpg?v=1749681754&width=800', logo: '', officialUrl: 'https://anewcross.com/products/ranglan-sleeve-sweatshirt-in-cotton', description: 'Sudadera de manga raglán confeccionada en algodón. Producto incluido en la colección de hombre de A New Cross.' },
   { id: 'agua-lolita-celina-bikini-top', name: 'Top de Bikini Lolita Celina', brand: 'Agua Bendita', audience: 'mujer', category: 'Tops de bikini', styles: ['Casual', 'Y2K'], price: 350000, color: 'Multicolor', sizes: ['XS', 'S', 'M', 'L', 'XL'], image: 'https://www.aguabendita.com.co/cdn/shop/files/Celina-Top-de-Bikini-Lolita-22323-1_1024x1024.jpg?v=1788391011', logo: '', officialUrl: 'https://www.aguabendita.com.co/products/celina-top-de-bikini-lolita-22323', description: 'Top de bikini triangular, con mostacillas hechas a mano, tiras ajustables y estampado localizado.' },
   { id: 'agua-mariel-celina-onepiece', name: 'Vestido de Baño Entero Mariel Celina', brand: 'Agua Bendita', audience: 'mujer', category: 'Traje de baño entero', styles: ['Casual', 'Y2K'], price: 450000, color: 'Multicolor', sizes: ['XS', 'S', 'M', 'L', 'XL'], image: 'https://www.aguabendita.com.co/cdn/shop/files/Celina-Vestido-de-Bano-Entero-Mariel-22315-1_1024x1024.jpg?v=1788390734', logo: '', officialUrl: 'https://www.aguabendita.com.co/products/celina-vestido-de-bano-entero-mariel-22315', description: 'Vestido de baño reversible con escote recto, tiras ajustables y amarres laterales; tiene dos estampados.' },
   { id: 'baobab-alora-maxi-dress-ambra', name: 'Alora Maxi Dress Ambra', brand: 'Baobab', audience: 'mujer', category: 'Vestidos', styles: ['Formal', 'Vintage'], price: 500000, color: 'Naranja', sizes: ['XS', 'S', 'M', 'L'], image: 'https://baobab.com.co/cdn/shop/files/BAOBABCOMSEP2527002_f02e4dd0-403f-4cda-9d35-48c1f51a453e.webp?v=1759409222&width=800', logo: '', officialUrl: 'https://baobab.com.co/collections/knitwear/products/alora-dress-ambra', description: 'Vestido maxi tejido de punto en tono Ambra, con cuello alto, mangas removibles y cortes asimétricos.' },
@@ -84,6 +84,14 @@ const weedgreenSnapshotReady = new Promise(resolve => {
   script.src = new URL('weedgreen-products.js', document.currentScript.src).href;
   script.onload = () => resolve(window.WEEDGREEN_PRODUCTS || []);
   script.onerror = () => resolve([]);
+  document.head.appendChild(script);
+});
+
+const retiredReady = new Promise(resolve => {
+  const script = document.createElement('script');
+  script.src = new URL('productos-retirados.js', document.currentScript.src).href;
+  script.onload = () => resolve(window.RETIRED_PRODUCTS || {});
+  script.onerror = () => resolve({});
   document.head.appendChild(script);
 });
 
@@ -158,8 +166,8 @@ function selectHomenProducts(products) {
   return selected;
 }
 
-window.CLOTHES_PRODUCTS_READY = Promise.all([remoteCatalogsReady, homenSnapshotReady, partnerSnapshotReady, weedgreenSnapshotReady, savageSnapshotReady, zipreSnapshotReady, kameSnapshotReady])
-  .then(([[remoteProducts, homenProducts, partnerCatalogs], homenSnapshot, partnerSnapshot, weedgreenSnapshot, savageSnapshot, zipreSnapshot, kameSnapshot]) => {
+window.CLOTHES_PRODUCTS_READY = Promise.all([remoteCatalogsReady, homenSnapshotReady, partnerSnapshotReady, weedgreenSnapshotReady, savageSnapshotReady, zipreSnapshotReady, kameSnapshotReady, retiredReady])
+  .then(([[remoteProducts, homenProducts, partnerCatalogs], homenSnapshot, partnerSnapshot, weedgreenSnapshot, savageSnapshot, zipreSnapshot, kameSnapshot, retired]) => {
   const merged = new Map(window.CLOTHES_PRODUCTS.map(product => [product.id, product]));
   [homenSnapshot, remoteProducts, homenProducts, weedgreenSnapshot, savageSnapshot, zipreSnapshot, kameSnapshot].filter(Array.isArray).flat().forEach(product => {
     merged.set(product.id, { ...merged.get(product.id), ...product });
@@ -170,8 +178,11 @@ window.CLOTHES_PRODUCTS_READY = Promise.all([remoteCatalogsReady, homenSnapshotR
     ...partnerBrandNames.flatMap(brand => Array.isArray(partnerCatalogs?.[brand]) ? partnerCatalogs[brand].slice(0, 30) : [])
   ];
   partnerProducts.forEach(product => merged.set(product.id, { ...merged.get(product.id), ...product }));
+  // Fuera: productos que la tienda ya no vende (productos-retirados.js) y la línea infantil,
+  // que no corresponde al catálogo de moda adulta.
   const catalogProducts = [...merged.values()].filter(product =>
     product.active !== false && product.brand !== 'Seven Seven' && product.brand !== 'EiiNA'
+    && !retired[product.id] && !/\bkids\b/i.test(product.name)
   );
   catalogProducts.forEach(product => {
     if (product.brand === 'Buds' && !product.logo) product.logo = '../Imagenes/Marcas/Buds/BUDS_LOGO.webp';
