@@ -2,9 +2,11 @@
 // Supabase falso en memoria (los datos se pierden al cerrarlo; nunca toca producción).
 //   node scripts/servidor-local.mjs            → http://localhost:8888
 //   ANALITICA_FALLA=1 node scripts/...          → el endpoint de eventos responde 500 (prueba 10)
+//   DATOS_DEMO=1 node scripts/...               → carga eventos inventados para ver el panel (solo en memoria)
 // Inspección: GET /__pruebas/eventos lista lo guardado. El reporte usa el token «admin-local».
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHandler as eventsHandler } from '../netlify/functions/analytics-events.mjs';
@@ -14,6 +16,23 @@ import { createFakeSupabase } from '../tests/supabase-falso.mjs';
 const root = fileURLToPath(new URL('..', import.meta.url));
 const port = Number(process.env.PORT) || 8888;
 const fake = createFakeSupabase();
+if (process.env.DATOS_DEMO) {
+  // Datos inventados SOLO para previsualizar el panel localmente; nunca llegan a Supabase.
+  const { products } = JSON.parse(readFileSync(new URL('../netlify/lib/catalogo-indice.json', import.meta.url)));
+  const ids = Object.keys(products).filter((_, i) => i % 9 === 0).slice(0, 40);
+  let seed = 7;
+  const random = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  for (let day = 29; day >= 0; day--) {
+    for (let n = Math.floor(random() * 9 * (1 + (29 - day) / 30)); n > 0; n--) {
+      const product = ids[Math.floor(random() ** 1.8 * ids.length)];
+      const occurred = new Date(Date.now() - day * 86_400_000 - random() * 50_000_000).toISOString();
+      const base = { event_id: crypto.randomUUID(), event_version: 1, occurred_at: occurred, received_at: occurred, brand_id: products[product], product_id: product, related_product_ids: [], session_id: crypto.randomUUID(), source_page: '/contenido/ropa_hombre', catalog_verified: true };
+      fake.db.analytics_events.push(random() < 0.6
+        ? { ...base, event_type: 'add_to_cart', quantity: 1 + Math.floor(random() * 2), source_component: 'catalogo', destination_type: null }
+        : { ...base, event_type: 'outbound_click', quantity: null, source_component: 'carrito', destination_type: random() < 0.85 ? 'tienda_web' : 'instagram' });
+    }
+  }
+}
 const events = eventsHandler({ fetchImpl: fake.fetchImpl, getSettings: fake.settings });
 const report = reportHandler({ fetchImpl: fake.fetchImpl, getSettings: fake.settings, authenticate: async req => req.headers.authorization === 'Bearer admin-local' ? { role: 'admin' } : null });
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.css': 'text/css', '.json': 'application/json', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.avif': 'image/avif', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.woff': 'font/woff', '.ttf': 'font/ttf' };
@@ -34,6 +53,7 @@ createServer(async (req, res) => {
     }
     if (url.pathname === '/__pruebas/eventos') return send(Response.json({ eventos: fake.db.analytics_events, rechazos: fake.db.analytics_rejections }));
     if (url.pathname === '/api/public-config') return send(Response.json({ configured: false }));
+    if (url.pathname === '/api/admin') return send(req.headers.authorization === 'Bearer admin-local' ? Response.json([]) : Response.json({ error: 'Inicia sesión' }, { status: 401 }));
     if (url.pathname.startsWith('/api/')) return send(new Response('No disponible en el servidor local', { status: 404 }));
     const path = normalize(join(root, decodeURIComponent(url.pathname.endsWith('/') ? `${url.pathname}index.html` : url.pathname)));
     if (!path.startsWith(root)) return send(new Response('', { status: 403 }));
@@ -43,4 +63,4 @@ createServer(async (req, res) => {
   } catch {
     res.writeHead(404); res.end('No encontrado');
   }
-}).listen(port, () => console.log(`Novum Label (pruebas de analítica) en http://localhost:${port}${process.env.ANALITICA_FALLA ? ' — modo falla' : ''}`));
+}).listen(port, () => console.log(`Novum Label (pruebas de analítica) en http://localhost:${port}${process.env.ANALITICA_FALLA ? ' — modo falla' : ''}${process.env.DATOS_DEMO ? ` — ${fake.db.analytics_events.length} eventos de demostración` : ''}`));

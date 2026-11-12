@@ -1,12 +1,71 @@
-<!doctype html>
-<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Administración · Novum Label</title><link rel="stylesheet" href="../../bootstrap/css/bootstrap.min.css"><link rel="stylesheet" href="../../Estilos/style.css"><style>
-.admin-page{padding:3rem 0 5rem}.admin-head{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}.admin-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin:2rem 0}.admin-stat,.admin-panel{border:1px solid #dedbd4;border-radius:16px;padding:1.2rem;background:var(--surface,#fff)}.admin-stat strong{display:block;font-size:2rem}.admin-tools{display:flex;gap:.75rem;flex-wrap:wrap;margin:1rem 0}.admin-tools button,.admin-table button{border:1px solid #222;border-radius:999px;padding:.55rem .9rem;background:transparent}.admin-table-wrap{overflow:auto}.admin-table{width:100%;border-collapse:collapse;min-width:1250px}.admin-table th,.admin-table td{padding:.75rem;border-bottom:1px solid #e3e0d9;text-align:left}.admin-table input{width:100%;min-width:125px;padding:.5rem;border:1px solid #bbb;border-radius:8px}.admin-alert{margin:1rem 0;min-height:1.5rem}.admin-small{color:#68655f;font-size:.9rem}.analytics-panel{margin-bottom:2rem}.analytics-range{display:flex;gap:.75rem;flex-wrap:wrap;align-items:end}.analytics-range label{display:grid;gap:.3rem;font-size:.85rem}.analytics-range input{padding:.45rem .6rem;border:1px solid #bbb;border-radius:8px}.analytics-totals{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1rem;margin:1rem 0}.analytics-panel .admin-table{min-width:720px}
-</style></head><body><div id="header"></div><main class="container admin-page"><section class="admin-head"><div><p class="eyebrow">NOVUM LABEL · CONTROL</p><h1>Administración<span>.</span></h1><p id="adminIdentity"></p></div><button id="logoutButton" type="button">Cerrar sesión</button></section><p id="adminMessage" class="admin-alert" role="status" aria-live="polite"></p><section class="admin-stats" aria-label="Estadísticas registradas"><article class="admin-stat"><span>Sesiones activas aprox.</span><strong id="onlineCount">—</strong></article><article class="admin-stat"><span>Pruebas registradas</span><strong id="tryOnCount">—</strong></article></section><p class="admin-small">Las sesiones activas son navegadores con actividad durante los últimos cinco minutos; no representan personas únicas. Las métricas empiezan en cero y solo cuentan actividad registrada por el sitio.</p><section class="admin-panel analytics-panel" aria-labelledby="analyticsTitle"><h2 id="analyticsTitle">Analítica del carrito y redirecciones</h2>
-<p class="admin-small">«Agregado al carrito» y «clic a tienda oficial» son intenciones registradas en Novum Label, no ventas confirmadas. Los días se cuentan en hora de Bogotá.</p>
-<form id="analyticsForm" class="analytics-range"><label>Desde<input type="date" id="analyticsFrom" required></label><label>Hasta<input type="date" id="analyticsTo" required></label><div class="admin-tools"><button type="submit">Ver resumen</button></div></form>
-<div class="admin-tools" aria-label="Exportar CSV"><button type="button" data-csv="marcas">CSV por marca</button><button type="button" data-csv="productos">CSV por producto</button><button type="button" data-csv="diario">CSV serie diaria</button><button type="button" data-csv="diario_marca">CSV diario por marca</button><button type="button" data-csv="eventos">CSV de eventos</button></div>
-<p id="analyticsMessage" class="admin-small" role="status" aria-live="polite"></p>
-<div class="analytics-totals"><article class="admin-stat"><span>Agregados al carrito</span><strong id="totalAdds">—</strong></article><article class="admin-stat"><span>Unidades agregadas</span><strong id="totalUnits">—</strong></article><article class="admin-stat"><span>Clics a tiendas oficiales</span><strong id="totalClicks">—</strong></article></div>
-<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Marca</th><th>Agregados</th><th>Unidades</th><th>Clics</th><th>Tienda web</th><th>Instagram</th><th>WhatsApp</th><th>Otro</th></tr></thead><tbody id="analyticsRows"><tr><td colspan="8">Elige un periodo y pulsa «Ver resumen».</td></tr></tbody></table></div>
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Administración · Novum Label</title><link rel="stylesheet" href="../../bootstrap/css/bootstrap.min.css"><link rel="stylesheet" href="../../Estilos/style.css"><style>
+.admin-page{padding:2.5rem 0 5rem;--card:#fff;--line-soft:#e6e3dc;--muted-ink:#68655f;--series-1:#2a78d6;--series-2:#eb6834;--track:#efede8}
+html[data-theme="dark"] .admin-page{--card:#1f201d;--line-soft:#34352f;--muted-ink:#b4b2a9;--series-1:#3987e5;--series-2:#d95926;--track:#2b2c27}
+.admin-head{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem}.admin-head h1{margin:.2rem 0}.admin-head p{margin:0;color:var(--muted-ink)}
+.admin-head button,.admin-tools button,.admin-table button{border:1px solid currentColor;border-radius:999px;padding:.5rem .95rem;background:transparent;color:inherit;font-size:.9rem}
+.admin-panel{border:1px solid var(--line-soft);border-radius:16px;padding:1.4rem;background:var(--card);margin-bottom:1.5rem}
+.admin-small{color:var(--muted-ink);font-size:.88rem;margin:.25rem 0}.admin-alert{margin:.5rem 0;min-height:1.2rem;color:var(--muted-ink);font-size:.9rem}
+.admin-tools{display:flex;gap:.6rem;flex-wrap:wrap;margin:.8rem 0}.admin-table-wrap{overflow:auto}.admin-table{width:100%;border-collapse:collapse}
+.admin-table th,.admin-table td{padding:.65rem .75rem;border-bottom:1px solid var(--line-soft);text-align:left;vertical-align:middle}.admin-table th{font-size:.78rem;font-weight:600;color:var(--muted-ink);text-transform:uppercase;letter-spacing:.04em}
+.admin-table td.num,.admin-table th.num{text-align:right;font-variant-numeric:tabular-nums}.admin-table input{width:100%;min-width:125px;padding:.45rem;border:1px solid #bbb;border-radius:8px}
+.inventory-table{min-width:1250px}
+/* Tablero de analítica */
+.dash-head{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap}.dash-head h2{margin:0 0 .2rem;font-size:1.5rem}
+.dash-filters{display:flex;align-items:flex-end;gap:.5rem;flex-wrap:wrap;margin:1.1rem 0 .4rem}
+.presets{display:inline-flex;border:1px solid var(--line-soft);border-radius:999px;padding:3px;gap:2px}
+.presets button{border:0;border-radius:999px;padding:.4rem .85rem;background:transparent;color:inherit;font-size:.88rem}.presets button[aria-pressed="true"]{background:#191917;color:#fff}
+html[data-theme="dark"] .presets button[aria-pressed="true"]{background:#f6f4ef;color:#191917}
+.dash-filters label{display:grid;gap:.2rem;font-size:.78rem;color:var(--muted-ink)}.dash-filters input{padding:.38rem .55rem;border:1px solid var(--line-soft);border-radius:8px;background:transparent;color:inherit}
+.dash-filters .apply{border:1px solid currentColor;border-radius:999px;padding:.42rem .9rem;background:transparent;color:inherit;font-size:.88rem}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.8rem;margin:1rem 0 1.4rem}
+.kpi{border:1px solid var(--line-soft);border-radius:14px;padding:1rem 1.1rem}.kpi span{display:block;font-size:.82rem;color:var(--muted-ink)}.kpi strong{display:block;font-size:2.1rem;font-weight:600;line-height:1.15;margin-top:.25rem;font-variant-numeric:tabular-nums}.kpi small{color:var(--muted-ink);font-size:.78rem}
+.dash-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:1rem}.dash-card{border:1px solid var(--line-soft);border-radius:14px;padding:1rem 1.1rem;min-width:0}
+.dash-card h3{font-size:1rem;margin:0 0 .15rem}.dash-card .admin-small{margin-bottom:.6rem}
+.legend{display:flex;gap:1rem;font-size:.82rem;color:var(--muted-ink);margin:.2rem 0 .4rem}.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:.35rem;vertical-align:middle}
+.chart{position:relative}.chart svg{display:block;width:100%;height:auto;overflow:visible}.chart .grid line{stroke:var(--line-soft)}.chart text{fill:var(--muted-ink);font-size:11px}
+.chart-tip{position:absolute;pointer-events:none;background:var(--card);border:1px solid var(--line-soft);border-radius:10px;padding:.45rem .6rem;font-size:.8rem;box-shadow:0 6px 20px rgba(0,0,0,.08);white-space:nowrap}
+.chart-tip b{display:block;margin-bottom:.15rem}.chart-tip i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:.35rem}
+.bar-cell{min-width:130px}.bar{height:8px;border-radius:4px;background:var(--track);overflow:hidden}.bar>span{display:block;height:100%;border-radius:4px}
+.dest-list{list-style:none;padding:0;margin:.4rem 0 0;display:grid;gap:.7rem}.dest-list li{display:grid;grid-template-columns:1fr auto;gap:.3rem .6rem;font-size:.9rem}.dest-list .bar{grid-column:1/-1}
+.empty{padding:1.6rem;text-align:center;color:var(--muted-ink);border:1px dashed var(--line-soft);border-radius:12px;font-size:.92rem}
+.dash-foot{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--line-soft)}
+.more{border:0;background:transparent;color:inherit;text-decoration:underline;font-size:.88rem;padding:.4rem 0}
+details.admin-panel>summary{cursor:pointer;font-size:1.25rem;font-weight:500;list-style:none}details.admin-panel>summary::after{content:"＋";float:right;color:var(--muted-ink)}details.admin-panel[open]>summary::after{content:"－"}
+@media(max-width:860px){.dash-grid{grid-template-columns:1fr}}
+</style></head><body><div id="header"></div><main class="container admin-page">
+<section class="admin-head"><div><p class="eyebrow">NOVUM LABEL · CONTROL</p><h1>Administración<span>.</span></h1><p id="adminIdentity"></p></div><button id="logoutButton" type="button">Cerrar sesión</button></section>
+
+<section class="admin-panel" aria-labelledby="analyticsTitle">
+  <div class="dash-head"><div><h2 id="analyticsTitle">Interacciones en la plataforma</h2><p class="admin-small">Agregados al carrito y clics hacia las tiendas oficiales registrados en Novum Label. Son intenciones de compra, no ventas confirmadas. Días en hora de Bogotá.</p></div></div>
+  <form id="analyticsForm" class="dash-filters">
+    <div class="presets" role="group" aria-label="Periodo"><button type="button" data-range="7">7 días</button><button type="button" data-range="30" aria-pressed="true">30 días</button><button type="button" data-range="90">90 días</button></div>
+    <label>Desde<input type="date" id="analyticsFrom" required></label><label>Hasta<input type="date" id="analyticsTo" required></label><button class="apply" type="submit">Aplicar</button>
+  </form>
+  <p id="analyticsMessage" class="admin-alert" role="status" aria-live="polite"></p>
+  <div class="kpis">
+    <article class="kpi"><span>Agregados al carrito</span><strong id="totalAdds">—</strong><small>acciones de «Añadir al carrito»</small></article>
+    <article class="kpi"><span>Unidades agregadas</span><strong id="totalUnits">—</strong><small>suma de unidades de esas acciones</small></article>
+    <article class="kpi"><span>Clics a tiendas oficiales</span><strong id="totalClicks">—</strong><small>redirecciones hacia la marca</small></article>
+    <article class="kpi"><span>Emprendimientos con interacción</span><strong id="totalBrands">—</strong><small id="totalBrandsNote">de las marcas del catálogo</small></article>
+  </div>
+  <div class="dash-grid">
+    <article class="dash-card"><h3>Evolución diaria</h3><p class="admin-small">Eventos por día en el periodo.</p>
+      <div class="legend"><span><i style="background:var(--series-1)"></i>Agregados al carrito</span><span><i style="background:var(--series-2)"></i>Clics a tiendas</span></div>
+      <div id="dailyChart" class="chart"></div></article>
+    <article class="dash-card"><h3>Destino de las redirecciones</h3><p class="admin-small">Hacia qué canal oficial salieron los clics.</p><ul id="destinations" class="dest-list"></ul></article>
+  </div>
+  <article class="dash-card" style="margin-top:1rem"><h3>Por emprendimiento</h3><p class="admin-small">Ordenado por agregados al carrito.</p>
+    <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Marca</th><th class="num">Agregados</th><th class="num">Unidades</th><th class="num">Clics</th><th>Participación en agregados</th></tr></thead><tbody id="brandRows"></tbody></table></div></article>
+  <article class="dash-card" style="margin-top:1rem"><h3>Productos con más interacción</h3><p class="admin-small">Comparación de prendas dentro del periodo.</p>
+    <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Prenda</th><th>Marca</th><th class="num">Agregados</th><th class="num">Unidades</th><th class="num">Clics</th></tr></thead><tbody id="productStatsRows"></tbody></table></div>
+    <button type="button" id="moreProducts" class="more" hidden>Ver todos los productos</button></article>
+  <div class="dash-foot"><span class="admin-small">Exportar el periodo seleccionado (CSV):</span><div class="admin-tools" style="margin:0"><button type="button" data-csv="marcas">Por marca</button><button type="button" data-csv="productos">Por producto</button><button type="button" data-csv="diario">Serie diaria</button><button type="button" data-csv="diario_marca">Diario por marca</button><button type="button" data-csv="eventos">Eventos individuales</button></div></div>
 </section>
-<section class="admin-panel"><h2>Inventario</h2><p class="admin-small">Edita nombre, precio, categoría, color, imagen, enlace oficial y visibilidad. Los cambios se guardan en Supabase y aparecen en el catálogo al recargar. Los precios son COP.</p><div class="admin-tools"><button type="button" id="importCatalog">Importar catálogo actual (una vez)</button><button type="button" id="saveCatalog">Guardar cambios</button><button type="button" id="refreshStats">Actualizar estadísticas</button></div><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Prenda</th><th>Marca</th><th>Precio COP</th><th>Categoría</th><th>Color</th><th>Imagen</th><th>URL oficial</th><th>Visible</th><th>Probada</th></tr></thead><tbody id="productRows"></tbody></table></div></section></main><script src="../../bootstrap/js/bootstrap.bundle.min.js"></script><script src="../js/clothes-data.js"></script><script src="../js/admin.js"></script><script src="../js/admin-analitica.js"></script></body></html>
+
+<details class="admin-panel"><summary>Inventario</summary>
+  <p class="admin-small">Edita nombre, precio, categoría, color, imagen, enlace oficial y visibilidad. Los cambios se guardan en Supabase. Los precios son COP.</p>
+  <p id="adminMessage" class="admin-alert" role="status" aria-live="polite"></p>
+  <div class="admin-tools"><button type="button" id="importCatalog">Importar catálogo actual (una vez)</button><button type="button" id="saveCatalog">Guardar cambios</button></div>
+  <div class="admin-table-wrap"><table class="admin-table inventory-table"><thead><tr><th>Prenda</th><th>Marca</th><th>Precio COP</th><th>Categoría</th><th>Color</th><th>Imagen</th><th>URL oficial</th><th>Visible</th><th>Probada</th></tr></thead><tbody id="productRows"></tbody></table></div>
+</details>
+</main><script src="../../bootstrap/js/bootstrap.bundle.min.js"></script><script src="../js/clothes-data.js"></script><script src="../js/admin.js"></script><script src="../js/admin-analitica.js"></script></body></html>

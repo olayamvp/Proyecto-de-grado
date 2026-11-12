@@ -20,13 +20,13 @@ function renderRows() {
 async function loadStats() {
   const response = await fetch('/api/analytics', { headers: headers() });
   if (!response.ok) throw new Error((await response.json()).error || 'No hay estadísticas disponibles.');
-  const data = await response.json(); document.getElementById('onlineCount').textContent = data.activeSessions; document.getElementById('tryOnCount').textContent = data.tryOnTotal;
+  const data = await response.json(); 
   stats = Object.fromEntries(data.tryOnByProduct.map(item => [item.productId, item.tries])); renderRows();
 }
 rowsNode.addEventListener('input', event => { const target = event.target; const index = Number(target.dataset.index); if (!Number.isInteger(index) || !target.dataset.field) return; products[index][target.dataset.field] = target.dataset.field === 'price' ? Number(target.value) : target.value; });
 rowsNode.addEventListener('change', event => { const target = event.target; if (target.dataset.field === 'active') products[Number(target.dataset.index)].active = target.checked; });
 document.getElementById('saveCatalog').addEventListener('click', async () => { try { const response = await fetch('/api/admin', { method: 'POST', headers: headers(), body: JSON.stringify({ products }) }); const data = await response.json(); if (!response.ok) throw new Error(data.error || 'No se guardaron los cambios.'); say(`Se guardaron ${data.saved} prendas.`); await loadCatalog(); } catch (error) { say(error.message); } });
 document.getElementById('importCatalog').addEventListener('click', async () => { if (!confirm('¿Importar el catálogo que está publicado en este navegador? Esta acción sube y sincroniza los productos.')) return; try { await window.CLOTHES_PRODUCTS_READY; products = window.CLOTHES_PRODUCTS.map(p => ({ ...p, active: true })); const response = await fetch('/api/admin', { method: 'POST', headers: headers(), body: JSON.stringify({ products }) }); const data = await response.json(); if (!response.ok) throw new Error(data.error || 'No se pudo importar.'); say(`Catálogo inicial importado: ${data.saved} prendas.`); await loadCatalog(); } catch (error) { say(error.message); } });
-document.getElementById('refreshStats').addEventListener('click', async () => { try { await loadStats(); say('Estadísticas actualizadas.'); } catch (error) { say(error.message); } });
 document.getElementById('logoutButton').addEventListener('click', () => { sessionStorage.removeItem('novum.accessToken'); sessionStorage.removeItem('novum.userEmail'); location.href = './acceso.html'; });
-loadCatalog().then(() => loadStats()).catch(error => say(error.message));
+// Las pruebas del probador (/api/analytics) son opcionales: si no están activas, la columna queda vacía sin error.
+loadCatalog().then(() => loadStats().catch(() => {})).catch(error => say(error.message));
